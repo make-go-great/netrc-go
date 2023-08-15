@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.0.2 (2023-08-15)
+
+### Added
+
+- feat: support home symbol (2023-08-15)
+
+### Others
+
+- chore(changelog): generate v0.0.1 (2023-08-15)
+
 ## v0.0.1 (2023-08-15)
 
 ### Added
