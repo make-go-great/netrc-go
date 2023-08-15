@@ -3,6 +3,8 @@ package netrc
 import (
 	"fmt"
 	"os"
+	"os/user"
+	"path/filepath"
 	"strings"
 )
 
@@ -10,15 +12,38 @@ const (
 	prefixMachine  = "machine"
 	prefixLogin    = "login"
 	prefixPassword = "password"
+
+	homeSymbol = '~'
 )
 
 func ParseFile(filename string) (Data, error) {
+	filename, err := trimHomeSymbol(filename)
+	if err != nil {
+		return Data{}, fmt.Errorf("failed to trim home symbol: %w", err)
+	}
+
 	bytes, err := os.ReadFile(filename)
 	if err != nil {
 		return Data{}, fmt.Errorf("os: failed to read file: %w", err)
 	}
 
 	return Parse(bytes), nil
+}
+
+// trimHomeSymbol replace ~ with full path
+// https://stackoverflow.com/a/17609894
+func trimHomeSymbol(path string) (string, error) {
+	if path == "" || path[0] != homeSymbol {
+		return path, nil
+	}
+
+	currentUser, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+
+	newPath := filepath.Join(currentUser.HomeDir, path[1:])
+	return newPath, nil
 }
 
 func Parse(bytes []byte) Data {
