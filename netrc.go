@@ -75,10 +75,10 @@ func Parse(bytes []byte) Data {
 			continue
 		}
 
-		if strings.HasPrefix(line, prefixLogin) {
-			curMachine.Login = strings.TrimSpace(strings.TrimPrefix(line, prefixLogin))
-		} else if strings.HasPrefix(line, prefixPassword) {
-			curMachine.Password = strings.TrimSpace(strings.TrimPrefix(line, prefixPassword))
+		if after, ok := strings.CutPrefix(line, prefixLogin); ok {
+			curMachine.Login = strings.TrimSpace(after)
+		} else if after, ok := strings.CutPrefix(line, prefixPassword); ok {
+			curMachine.Password = strings.TrimSpace(after)
 		}
 	}
 
